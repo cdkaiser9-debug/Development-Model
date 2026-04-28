@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STL Class A Rent Tracker — New Construction (Last 5 Years)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f6f8;
+            color: #1a1a2e;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        header { margin-bottom: 1.5rem; }
+        h1 {
+            font-size: 1.9rem;
+            color: #0f1f3a;
+            margin-bottom: 0.25rem;
+        }
+        .subtitle { color: #6b7280; font-size: 0.95rem; }
+
+        .disclaimer {
+            background: #fff7ed;
+            border-left: 4px solid #f59e0b;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #78350f;
+            margin: 1rem 0 1.5rem;
+        }
+
+        /* Stats row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .stat-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6b7280;
+            margin-bottom: 0.4rem;
+        }
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0f1f3a;
+        }
+        .stat-sub { font-size: 0.8rem; color: #9ca3af; margin-top: 0.2rem; }
+
+        /* Layout */
+        .panel {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            margin-bottom: 1.5rem;
+        }
+        .panel h2 {
+            font-size: 1.05rem;
+            color: #374151;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+        .filter-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 0.5rem 0.65rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: #fff;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        @media (max-width: 800px) {
+            .chart-grid { grid-template-columns: 1fr; }
+        }
+        .chart-wrap { position: relative; height: 280px; }
+
+        /* Building list */
+        .table-wrap { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.7rem 0.6rem;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+        th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            user-select: none;
+            position: sticky;
+            top: 0;
+        }
+        th:hover { background: #f3f4f6; }
+        th.sort-asc::after { content: ' ▲'; color: #2563eb; font-size: 0.7rem; }
+        th.sort-desc::after { content: ' ▼'; color: #2563eb; font-size: 0.7rem; }
+        tbody tr:hover { background: #f9fafb; }
+        td.num { text-align: right; font-variant-numeric: tabular-nums; }
+        .building-name { font-weight: 600; color: #0f1f3a; }
+        .neighborhood { color: #6b7280; font-size: 0.8rem; }
+        .badge {
+            display: inline-block;
+            padding: 0.1rem 0.5rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        footer {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.78rem;
+            margin-top: 2rem;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>STL Class A Rent Tracker</h1>
+            <p class="subtitle">Monthly effective rent at Class A apartment communities delivered in St. Louis City within the last 5 years.</p>
+        </header>
+
+        <div class="disclaimer">
+            <strong>Sample data.</strong> Figures shown are illustrative estimates compiled for demonstration. For underwriting or investment decisions, verify against primary sources (CoStar, Yardi Matrix, Apartments.com, building leasing offices). Effective rent = asking rent − (concession value ÷ lease term).
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Avg Effective Rent</div>
+                <div class="stat-value" id="stat-avg-rent">—</div>
+                <div class="stat-sub" id="stat-avg-sub">across filtered units</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg Rent / SqFt</div>
+                <div class="stat-value" id="stat-psf">—</div>
+                <div class="stat-sub">monthly $/sf</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg Concession</div>
+                <div class="stat-value" id="stat-concession">—</div>
+                <div class="stat-sub">months free / 12-mo lease</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Buildings Tracked</div>
+                <div class="stat-value" id="stat-buildings">—</div>
+                <div class="stat-sub" id="stat-units-sub">units</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Filters</h2>
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="filter-beds">Bedrooms</label>
+                    <select id="filter-beds">
+                        <option value="all">All</option>
+                        <option value="0">Studio</option>
+                        <option value="1">1 BR</option>
+                        <option value="2">2 BR</option>
+                        <option value="3">3 BR</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-neighborhood">Neighborhood</label>
+                    <select id="filter-neighborhood">
+                        <option value="all">All neighborhoods</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-year">Year Built (min)</label>
+                    <select id="filter-year">
+                        <option value="2021">2021 or later</option>
+                        <option value="2022">2022 or later</option>
+                        <option value="2023">2023 or later</option>
+                        <option value="2024">2024 or later</option>
+                        <option value="2025">2025 or later</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-search">Search building</label>
+                    <input id="filter-search" type="text" placeholder="e.g. Foundry">
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Effective Rent Snapshot</h2>
+            <div class="chart-grid">
+                <div>
+                    <div class="chart-wrap"><canvas id="chart-by-beds"></canvas></div>
+                </div>
+                <div>
+                    <div class="chart-wrap"><canvas id="chart-by-neighborhood"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Buildings &amp; Unit Mix</h2>
+            <div class="table-wrap">
+                <table id="building-table">
+                    <thead>
+                        <tr>
+                            <th data-sort="name">Building</th>
+                            <th data-sort="year" class="num">Yr Built</th>
+                            <th data-sort="beds" class="num">Beds</th>
+                            <th data-sort="sqft" class="num">SqFt</th>
+                            <th data-sort="ask" class="num">Asking</th>
+                            <th data-sort="concession" class="num">Concession</th>
+                            <th data-sort="effective" class="num sort-desc">Effective</th>
+                            <th data-sort="psf" class="num">$/SF</th>
+                        </tr>
+                    </thead>
+                    <tbody id="building-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer>
+            STL Class A Rent Tracker · Data refreshed manually · Page generated <span id="gen-date"></span>
+        </footer>
+    </div>
+
+    <script>
+    // ---- Sample dataset: Class A new construction in St. Louis City (2021–present) ----
+    // Each unit row: building -> neighborhood, yearBuilt, totalUnits, beds, sqft,
+    //   askingRent (monthly), concessionMonths (months free on a 12-mo lease).
+    // Effective rent is computed: ask * (1 - concessionMonths/12).
+    const BUILDINGS = [
+        { name: "Expo at Forest Park", neighborhood: "Central West End", yearBuilt: 2022, totalUnits: 195, units: [
+            { beds: 0, sqft: 540,  ask: 1525, concession: 1.0 },
+            { beds: 1, sqft: 720,  ask: 1820, concession: 1.0 },
+            { beds: 2, sqft: 1080, ask: 2680, concession: 1.0 },
+        ]},
+        { name: "City Foundry — The Power House", neighborhood: "Midtown", yearBuilt: 2023, totalUnits: 280, units: [
+            { beds: 0, sqft: 565,  ask: 1610, concession: 1.5 },
+            { beds: 1, sqft: 745,  ask: 1925, concession: 1.5 },
+            { beds: 2, sqft: 1150, ask: 2850, concession: 2.0 },
+            { beds: 3, sqft: 1450, ask: 3650, concession: 2.0 },
+        ]},
+        { name: "The Steelcote", neighborhood: "Cortex", yearBuilt: 2022, totalUnits: 217, units: [
+            { beds: 0, sqft: 555,  ask: 1580, concession: 1.0 },
+            { beds: 1, sqft: 735,  ask: 1880, concession: 1.0 },
+            { beds: 2, sqft: 1110, ask: 2790, concession: 1.5 },
+        ]},
+        { name: "100 Above the Park", neighborhood: "Forest Park Southeast", yearBuilt: 2022, totalUnits: 102, units: [
+            { beds: 1, sqft: 760,  ask: 2100, concession: 0.5 },
+            { beds: 2, sqft: 1180, ask: 3050, concession: 0.5 },
+            { beds: 3, sqft: 1620, ask: 4400, concession: 0.0 },
+        ]},
+        { name: "21 South Euclid", neighborhood: "Central West End", yearBuilt: 2024, totalUnits: 165, units: [
+            { beds: 0, sqft: 535,  ask: 1675, concession: 2.0 },
+            { beds: 1, sqft: 740,  ask: 2010, concession: 2.0 },
+            { beds: 2, sqft: 1140, ask: 3025, concession: 2.0 },
+        ]},
+        { name: "Chouteau Crossing", neighborhood: "Lafayette Square", yearBuilt: 2023, totalUnits: 144, units: [
+            { beds: 1, sqft: 715,  ask: 1795, concession: 1.5 },
+            { beds: 2, sqft: 1090, ask: 2650, concession: 1.5 },
+        ]},
+        { name: "The Orion", neighborhood: "Downtown", yearBuilt: 2021, totalUnits: 191, units: [
+            { beds: 0, sqft: 520,  ask: 1395, concession: 2.0 },
+            { beds: 1, sqft: 720,  ask: 1650, concession: 2.0 },
+            { beds: 2, sqft: 1080, ask: 2350, concession: 2.5 },
+        ]},
+        { name: "Steelyard at Armory", neighborhood: "Midtown", yearBuilt: 2024, totalUnits: 235, units: [
+            { beds: 0, sqft: 560,  ask: 1620, concession: 2.0 },
+            { beds: 1, sqft: 750,  ask: 1955, concession: 2.0 },
+            { beds: 2, sqft: 1175, ask: 2920, concession: 2.5 },
+        ]},
+        { name: "Kingshighway Lofts II", neighborhood: "The Grove", yearBuilt: 2023, totalUnits: 128, units: [
+            { beds: 1, sqft: 705,  ask: 1740, concession: 1.5 },
+            { beds: 2, sqft: 1060, ask: 2540, concession: 1.5 },
+        ]},
+        { name: "The Standard at Cardinal Way", neighborhood: "Downtown", yearBuilt: 2021, totalUnits: 285, units: [
+            { beds: 1, sqft: 760,  ask: 2050, concession: 1.0 },
+            { beds: 2, sqft: 1190, ask: 3100, concession: 1.0 },
+            { beds: 3, sqft: 1640, ask: 4600, concession: 1.0 },
+        ]},
+        { name: "The Laurel Residences", neighborhood: "Downtown", yearBuilt: 2021, totalUnits: 205, units: [
+            { beds: 0, sqft: 545,  ask: 1380, concession: 2.5 },
+            { beds: 1, sqft: 730,  ask: 1620, concession: 2.5 },
+            { beds: 2, sqft: 1090, ask: 2300, concession: 3.0 },
+        ]},
+        { name: "Gravois & Grand Flats", neighborhood: "Tower Grove South", yearBuilt: 2025, totalUnits: 112, units: [
+            { beds: 0, sqft: 530,  ask: 1495, concession: 1.5 },
+            { beds: 1, sqft: 720,  ask: 1810, concession: 1.5 },
+            { beds: 2, sqft: 1080, ask: 2580, concession: 1.5 },
+        ]},
+    ];
+
+    // Flatten to unit-level rows
+    const ROWS = BUILDINGS.flatMap(b => b.units.map(u => ({
+        building: b.name,
+        neighborhood: b.neighborhood,
+        yearBuilt: b.yearBuilt,
+        totalUnits: b.totalUnits,
+        beds: u.beds,
+        sqft: u.sqft,
+        ask: u.ask,
+        concession: u.concession,
+        effective: Math.round(u.ask * (1 - u.concession / 12)),
+        psf: +(u.ask * (1 - u.concession / 12) / u.sqft).toFixed(2),
+    })));
+
+    // Populate neighborhood filter
+    const neighborhoodSel = document.getElementById('filter-neighborhood');
+    [...new Set(BUILDINGS.map(b => b.neighborhood))].sort().forEach(n => {
+        const opt = document.createElement('option');
+        opt.value = n; opt.textContent = n;
+        neighborhoodSel.appendChild(opt);
+    });
+
+    // Filter / sort state
+    const state = { beds: 'all', neighborhood: 'all', year: '2021', search: '', sortKey: 'effective', sortDir: 'desc' };
+
+    document.getElementById('filter-beds').addEventListener('change', e => { state.beds = e.target.value; render(); });
+    document.getElementById('filter-neighborhood').addEventListener('change', e => { state.neighborhood = e.target.value; render(); });
+    document.getElementById('filter-year').addEventListener('change', e => { state.year = e.target.value; render(); });
+    document.getElementById('filter-search').addEventListener('input', e => { state.search = e.target.value.toLowerCase(); render(); });
+
+    document.querySelectorAll('th[data-sort]').forEach(th => {
+        th.addEventListener('click', () => {
+            const key = th.dataset.sort;
+            if (state.sortKey === key) state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
+            else { state.sortKey = key; state.sortDir = 'desc'; }
+            render();
+        });
+    });
+
+    function applyFilters() {
+        return ROWS.filter(r =>
+            (state.beds === 'all' || String(r.beds) === state.beds) &&
+            (state.neighborhood === 'all' || r.neighborhood === state.neighborhood) &&
+            (r.yearBuilt >= +state.year) &&
+            (state.search === '' || r.building.toLowerCase().includes(state.search))
+        );
+    }
+
+    function applySort(rows) {
+        const key = state.sortKey;
+        const dir = state.sortDir === 'asc' ? 1 : -1;
+        const accessor = {
+            name: r => r.building,
+            year: r => r.yearBuilt,
+            beds: r => r.beds,
+            sqft: r => r.sqft,
+            ask: r => r.ask,
+            concession: r => r.concession,
+            effective: r => r.effective,
+            psf: r => r.psf,
+        }[key];
+        return [...rows].sort((a, b) => {
+            const va = accessor(a), vb = accessor(b);
+            if (typeof va === 'string') return dir * va.localeCompare(vb);
+            return dir * (va - vb);
+        });
+    }
+
+    const fmtMoney = n => n == null ? '—' : '$' + Math.round(n).toLocaleString();
+    const fmtBeds = n => n === 0 ? 'Studio' : `${n} BR`;
+
+    function renderStats(rows) {
+        if (rows.length === 0) {
+            ['stat-avg-rent', 'stat-psf', 'stat-concession', 'stat-buildings'].forEach(id =>
+                document.getElementById(id).textContent = '—');
+            return;
+        }
+        const avg = rows.reduce((s, r) => s + r.effective, 0) / rows.length;
+        const psf = rows.reduce((s, r) => s + r.psf, 0) / rows.length;
+        const concession = rows.reduce((s, r) => s + r.concession, 0) / rows.length;
+        const buildings = new Set(rows.map(r => r.building));
+        const totalUnits = [...buildings].reduce((s, name) => {
+            const b = BUILDINGS.find(x => x.name === name);
+            return s + (b ? b.totalUnits : 0);
+        }, 0);
+
+        document.getElementById('stat-avg-rent').textContent = fmtMoney(avg);
+        document.getElementById('stat-psf').textContent = '$' + psf.toFixed(2);
+        document.getElementById('stat-concession').textContent = concession.toFixed(1) + ' mo';
+        document.getElementById('stat-buildings').textContent = buildings.size;
+        document.getElementById('stat-units-sub').textContent = totalUnits.toLocaleString() + ' units citywide';
+    }
+
+    function renderTable(rows) {
+        const tbody = document.getElementById('building-tbody');
+        tbody.innerHTML = '';
+        if (rows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:2rem;">No units match the current filters.</td></tr>';
+        } else {
+            rows.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div class="building-name">${r.building}</div>
+                        <div class="neighborhood">${r.neighborhood}</div>
+                    </td>
+                    <td class="num">${r.yearBuilt}</td>
+                    <td class="num"><span class="badge">${fmtBeds(r.beds)}</span></td>
+                    <td class="num">${r.sqft.toLocaleString()}</td>
+                    <td class="num">${fmtMoney(r.ask)}</td>
+                    <td class="num">${r.concession.toFixed(1)} mo</td>
+                    <td class="num"><strong>${fmtMoney(r.effective)}</strong></td>
+                    <td class="num">$${r.psf.toFixed(2)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        document.querySelectorAll('th[data-sort]').forEach(th => {
+            th.classList.remove('sort-asc', 'sort-desc');
+            if (th.dataset.sort === state.sortKey) {
+                th.classList.add(state.sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+            }
+        });
+    }
+
+    let chartBeds, chartHood;
+    function renderCharts(rows) {
+        // Group by beds
+        const byBeds = {};
+        rows.forEach(r => {
+            (byBeds[r.beds] = byBeds[r.beds] || []).push(r.effective);
+        });
+        const bedKeys = Object.keys(byBeds).map(Number).sort((a, b) => a - b);
+        const bedLabels = bedKeys.map(fmtBeds);
+        const bedAvgs = bedKeys.map(k => Math.round(byBeds[k].reduce((s, v) => s + v, 0) / byBeds[k].length));
+
+        // Group by neighborhood
+        const byHood = {};
+        rows.forEach(r => {
+            (byHood[r.neighborhood] = byHood[r.neighborhood] || []).push(r.effective);
+        });
+        const hoodEntries = Object.entries(byHood)
+            .map(([k, v]) => [k, Math.round(v.reduce((s, x) => s + x, 0) / v.length)])
+            .sort((a, b) => b[1] - a[1]);
+
+        if (chartBeds) chartBeds.destroy();
+        chartBeds = new Chart(document.getElementById('chart-by-beds'), {
+            type: 'bar',
+            data: {
+                labels: bedLabels,
+                datasets: [{
+                    label: 'Avg Effective Rent',
+                    data: bedAvgs,
+                    backgroundColor: '#2563eb',
+                    borderRadius: 6,
+                }],
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: 'Avg Effective Rent by Bedroom Count', font: { size: 13 } },
+                    tooltip: { callbacks: { label: ctx => '$' + ctx.parsed.y.toLocaleString() } },
+                },
+                scales: { y: { ticks: { callback: v => '$' + v.toLocaleString() } } },
+            },
+        });
+
+        if (chartHood) chartHood.destroy();
+        chartHood = new Chart(document.getElementById('chart-by-neighborhood'), {
+            type: 'bar',
+            data: {
+                labels: hoodEntries.map(e => e[0]),
+                datasets: [{
+                    label: 'Avg Effective Rent',
+                    data: hoodEntries.map(e => e[1]),
+                    backgroundColor: '#0ea5e9',
+                    borderRadius: 6,
+                }],
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: 'Avg Effective Rent by Neighborhood', font: { size: 13 } },
+                    tooltip: { callbacks: { label: ctx => '$' + ctx.parsed.x.toLocaleString() } },
+                },
+                scales: { x: { ticks: { callback: v => '$' + v.toLocaleString() } } },
+            },
+        });
+    }
+
+    function render() {
+        const filtered = applyFilters();
+        const sorted = applySort(filtered);
+        renderStats(filtered);
+        renderTable(sorted);
+        renderCharts(filtered);
+    }
+
+    document.getElementById('gen-date').textContent = new Date().toLocaleDateString('en-US',
+        { year: 'numeric', month: 'long', day: 'numeric' });
+    render();
+    </script>
+</body>
+</html>
