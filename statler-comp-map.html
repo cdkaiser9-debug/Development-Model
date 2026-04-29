@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statler Apartments — Comp Map (2-mile radius, Class A, ≤6 yrs)</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1f3a;
+            color: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: #0f1f3a;
+            color: #fff;
+            padding: 0.85rem 1.25rem;
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            flex-wrap: wrap;
+            border-bottom: 3px solid #f59e0b;
+        }
+        header h1 { font-size: 1.15rem; font-weight: 700; }
+        header .sub { font-size: 0.85rem; color: #cbd5e1; }
+        header .legend {
+            margin-left: auto;
+            display: flex;
+            gap: 1rem;
+            font-size: 0.78rem;
+            color: #cbd5e1;
+            flex-wrap: wrap;
+        }
+        header .legend span { display: inline-flex; align-items: center; gap: 0.35rem; }
+        header .legend .dot {
+            width: 11px; height: 11px; border-radius: 50%;
+            border: 2px solid #fff;
+        }
+        .dot.subject { background: #ef4444; }
+        .dot.comp    { background: #2563eb; }
+        .ring-key   { width: 18px; height: 0; border-top: 2px dashed #f59e0b; }
+
+        #map { flex: 1; width: 100%; }
+
+        .disclaimer {
+            background: #fff7ed;
+            border-top: 1px solid #fed7aa;
+            color: #78350f;
+            font-size: 0.78rem;
+            padding: 0.5rem 1.25rem;
+            text-align: center;
+        }
+
+        /* Hover card */
+        .leaflet-tooltip.prop-card {
+            background: #fff;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 0;
+            box-shadow: 0 8px 24px rgba(15, 31, 58, 0.25);
+            opacity: 1;
+            max-width: 320px;
+            white-space: normal;
+        }
+        .leaflet-tooltip.prop-card::before { display: none; }
+        .pc-photo {
+            width: 100%;
+            height: 140px;
+            background: #e5e7eb center/cover no-repeat;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: flex-end;
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+            padding: 0.5rem 0.75rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .pc-body { padding: 0.65rem 0.85rem 0.85rem; }
+        .pc-meta {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .pc-meta .badge {
+            background: #dbeafe; color: #1e40af;
+            border-radius: 999px;
+            padding: 0.05rem 0.55rem;
+            font-weight: 600;
+        }
+        .pc-meta .occ {
+            background: #dcfce7; color: #166534;
+            border-radius: 999px;
+            padding: 0.05rem 0.55rem;
+            font-weight: 600;
+        }
+        .pc-meta .occ.low  { background: #fee2e2; color: #991b1b; }
+        .pc-meta .occ.mid  { background: #fef3c7; color: #92400e; }
+        .pc-rents {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 0.45rem;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 0.15rem 0.65rem;
+            font-size: 0.82rem;
+        }
+        .pc-rents .h {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6b7280;
+            font-weight: 600;
+        }
+        .pc-rents .rent { font-variant-numeric: tabular-nums; text-align: right; font-weight: 600; color: #0f1f3a; }
+        .pc-rents .sf   { font-variant-numeric: tabular-nums; text-align: right; color: #6b7280; font-size: 0.76rem; }
+        .pc-subject {
+            background: #fff7ed;
+            color: #78350f;
+            font-size: 0.72rem;
+            padding: 0.35rem 0.85rem;
+            border-top: 1px solid #fed7aa;
+            border-radius: 0 0 10px 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>Statler Apartments — Submarket Comp Map</h1>
+            <div class="sub">Class A communities delivered 2020–2026, within a 2-mile radius · Surprise, AZ</div>
+        </div>
+        <div class="legend">
+            <span><i class="dot subject"></i> Statler (subject)</span>
+            <span><i class="dot comp"></i> Class A comp</span>
+            <span><i class="ring-key"></i> 2-mile radius</span>
+            <span>Hover a pin for details</span>
+        </div>
+    </header>
+
+    <div id="map"></div>
+
+    <div class="disclaimer">
+        Property locations approximated; effective rents and occupancy shown are illustrative placeholders for layout demonstration. Verify with CoStar / Yardi Matrix / leasing offices before underwriting.
+    </div>
+
+<script>
+// ---------- Subject + comps ----------
+// Coordinates are approximate; replace with verified lat/lng from your rent survey.
+// Photos use Unsplash placeholder images — swap PHOTO with the comp's actual marketing photo URL.
+
+const SUBJECT = {
+    name: "Statler Apartments",
+    address: "Surprise, AZ",
+    lat: 33.6383,
+    lng: -112.3576,
+    yearBuilt: 2024,
+    units: 280,
+    photo: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=300&fit=crop",
+};
+
+// 2-mile radius in meters
+const RADIUS_M = 2 * 1609.344;
+
+// All comps within ~2 miles of subject. Effective rent = ask − (concession ÷ lease term).
+const COMPS = [
+    {
+        name: "Acero at Marley Park",
+        yearBuilt: 2022, units: 312, occupancy: 0.94,
+        lat: 33.6502, lng: -112.3478,
+        photo: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&h=300&fit=crop",
+        rents: [
+            { type: "Studio", sqft: 545, eff: 1485 },
+            { type: "1 BR",   sqft: 740, eff: 1680 },
+            { type: "2 BR",   sqft: 1075, eff: 2050 },
+            { type: "3 BR",   sqft: 1395, eff: 2495 },
+        ],
+    },
+    {
+        name: "Liv North Surprise",
+        yearBuilt: 2023, units: 244, occupancy: 0.91,
+        lat: 33.6448, lng: -112.3402,
+        photo: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=300&fit=crop",
+        rents: [
+            { type: "1 BR", sqft: 755, eff: 1715 },
+            { type: "2 BR", sqft: 1095, eff: 2095 },
+            { type: "3 BR", sqft: 1410, eff: 2580 },
+        ],
+    },
+    {
+        name: "Avilla Centerra Crossings",
+        yearBuilt: 2021, units: 188, occupancy: 0.96,
+        lat: 33.6298, lng: -112.3482,
+        photo: "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=600&h=300&fit=crop",
+        rents: [
+            { type: "1 BR", sqft: 720, eff: 1795 },
+            { type: "2 BR", sqft: 1050, eff: 2185 },
+            { type: "3 BR", sqft: 1340, eff: 2645 },
+        ],
+    },
+    {
+        name: "BB Living at Sundance",
+        yearBuilt: 2020, units: 213, occupancy: 0.95,
+        lat: 33.6212, lng: -112.3508,
+        photo: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&h=300&fit=crop",
+        rents: [
+            { type: "2 BR", sqft: 1085, eff: 2245 },
+            { type: "3 BR", sqft: 1395, eff: 2715 },
+            { type: "4 BR", sqft: 1620, eff: 3120 },
+        ],
+    },
+    {
+        name: "Trillium at Marley Park",
+        yearBuilt: 2024, units: 264, occupancy: 0.88,
+        lat: 33.6535, lng: -112.3611,
+        photo: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600&h=300&fit=crop",
+        rents: [
+            { type: "Studio", sqft: 540, eff: 1525 },
+            { type: "1 BR",   sqft: 745, eff: 1735 },
+            { type: "2 BR",   sqft: 1085, eff: 2110 },
+            { type: "3 BR",   sqft: 1395, eff: 2540 },
+        ],
+    },
+    {
+        name: "Vista Ventana",
+        yearBuilt: 2021, units: 320, occupancy: 0.93,
+        lat: 33.6325, lng: -112.3712,
+        photo: "https://images.unsplash.com/photo-1494526585095-c41746248156?w=600&h=300&fit=crop",
+        rents: [
+            { type: "1 BR", sqft: 735, eff: 1655 },
+            { type: "2 BR", sqft: 1075, eff: 2025 },
+            { type: "3 BR", sqft: 1380, eff: 2470 },
+        ],
+    },
+    {
+        name: "The Place at Marley Park",
+        yearBuilt: 2022, units: 296, occupancy: 0.92,
+        lat: 33.6478, lng: -112.3695,
+        photo: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=300&fit=crop",
+        rents: [
+            { type: "Studio", sqft: 535, eff: 1455 },
+            { type: "1 BR",   sqft: 730, eff: 1665 },
+            { type: "2 BR",   sqft: 1070, eff: 2010 },
+        ],
+    },
+    {
+        name: "Avilla Vista",
+        yearBuilt: 2025, units: 178, occupancy: 0.79,
+        lat: 33.6290, lng: -112.3650,
+        photo: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=300&fit=crop",
+        rents: [
+            { type: "1 BR", sqft: 740, eff: 1850 },
+            { type: "2 BR", sqft: 1080, eff: 2245 },
+            { type: "3 BR", sqft: 1370, eff: 2710 },
+        ],
+    },
+    {
+        name: "Encantada Surprise",
+        yearBuilt: 2020, units: 348, occupancy: 0.95,
+        lat: 33.6389, lng: -112.3409,
+        photo: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=300&fit=crop",
+        rents: [
+            { type: "1 BR", sqft: 745, eff: 1635 },
+            { type: "2 BR", sqft: 1095, eff: 1985 },
+            { type: "3 BR", sqft: 1395, eff: 2415 },
+        ],
+    },
+];
+
+// ---------- Map setup ----------
+const map = L.map('map', { zoomControl: true, scrollWheelZoom: true })
+    .setView([SUBJECT.lat, SUBJECT.lng], 14);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 19,
+}).addTo(map);
+
+// 2-mile radius ring
+L.circle([SUBJECT.lat, SUBJECT.lng], {
+    radius: RADIUS_M,
+    color: '#f59e0b',
+    weight: 2,
+    dashArray: '6 6',
+    fillColor: '#f59e0b',
+    fillOpacity: 0.06,
+    interactive: false,
+}).addTo(map);
+
+// ---------- Helpers ----------
+const fmtMoney = n => '$' + Math.round(n).toLocaleString();
+
+function occClass(o) {
+    if (o < 0.85) return 'low';
+    if (o < 0.92) return 'mid';
+    return '';
+}
+
+function rentRows(rents) {
+    return rents.map(r => `
+        <div>${r.type}</div>
+        <div class="sf">${r.sqft.toLocaleString()} sf</div>
+        <div class="rent">${fmtMoney(r.eff)}</div>
+    `).join('');
+}
+
+function cardHTML(p, isSubject) {
+    const occ = (p.occupancy * 100).toFixed(1) + '%';
+    const occCls = isSubject ? '' : occClass(p.occupancy);
+    return `
+        <div class="pc-photo" style="background-image:url('${p.photo}')">${p.name}</div>
+        <div class="pc-body">
+            <div class="pc-meta">
+                <span class="badge">Built ${p.yearBuilt} · ${p.units} units</span>
+                ${isSubject ? '' : `<span class="occ ${occCls}">Occ ${occ}</span>`}
+            </div>
+            <div class="pc-rents">
+                <div class="h">Unit Type</div><div class="h sf">SqFt</div><div class="h rent">Eff. Rent</div>
+                ${rentRows(p.rents || subjectRents)}
+            </div>
+        </div>
+        ${isSubject ? '<div class="pc-subject">Subject property</div>' : ''}
+    `;
+}
+
+// Add subject rents (illustrative placeholder)
+const subjectRents = [
+    { type: "1 BR", sqft: 745, eff: 1725 },
+    { type: "2 BR", sqft: 1085, eff: 2095 },
+    { type: "3 BR", sqft: 1395, eff: 2545 },
+];
+SUBJECT.rents = subjectRents;
+SUBJECT.occupancy = 0.86;
+
+// ---------- Markers ----------
+function markerIcon(color) {
+    return L.divIcon({
+        className: '',
+        html: `<div style="
+            width:18px;height:18px;border-radius:50%;
+            background:${color};border:3px solid #fff;
+            box-shadow:0 2px 6px rgba(0,0,0,0.4);"></div>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
+    });
+}
+
+// Subject marker
+L.marker([SUBJECT.lat, SUBJECT.lng], { icon: markerIcon('#ef4444'), zIndexOffset: 1000 })
+    .addTo(map)
+    .bindTooltip(cardHTML(SUBJECT, true), {
+        className: 'prop-card',
+        direction: 'top',
+        offset: [0, -10],
+        sticky: false,
+    });
+
+// Comp markers
+COMPS.forEach(p => {
+    L.marker([p.lat, p.lng], { icon: markerIcon('#2563eb') })
+        .addTo(map)
+        .bindTooltip(cardHTML(p, false), {
+            className: 'prop-card',
+            direction: 'top',
+            offset: [0, -10],
+            sticky: false,
+        });
+});
+
+// Fit bounds to ring so the whole 2-mile circle is visible
+const ringBounds = L.latLng(SUBJECT.lat, SUBJECT.lng).toBounds(RADIUS_M * 2);
+map.fitBounds(ringBounds, { padding: [40, 40] });
+</script>
+</body>
+</html>
