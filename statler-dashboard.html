@@ -240,15 +240,17 @@ const DATA = {
         manager: "Mark-Taylor", owner: "Larson Capital Management",
         yearBuilt: "May 2024", stories: 4, totalUnits: 240, avgSf: 828,
         lat: 33.6242, lng: -112.3690,            // approximate (grid-derived)
-        photo: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000&h=600&fit=crop",
-        photoIsPlaceholder: true,
+        photo: "statler.jpg",                    // real marketing photo (clubhouse)
+        photoIsPlaceholder: false,
 
-        // ---- KPIs (from report) ----
-        occupied: 0.912,          // 100% − 8.8% vacancy (21 of 240 units vacant)
-        availability: 0.113,      // 27 of 240 units available
-        leased: null,             // CoStar reports availability, not a leased rate.
-                                  //   Set this from the Mark-Taylor rent roll for a true % leased.
-        absorption12mo: 40,       // units absorbed, trailing 12 mo
+        // ---- KPIs ----
+        // Occupancy/leased from Mark-Taylor rent roll dated 5/28/2026 (224 occ / 16 vac of 240).
+        occupied: 0.9333,         // 224 of 240 occupied
+        leased: 0.9333,           // 224 of 240 have an active lease; no vacant-leased units in the roll
+        onNotice: 22,             // occupied units on notice-to-vacate (NTV)
+        vacant: 16,
+        occAsOf: "2026-05-28",    // rent roll date
+        absorption12mo: 40,       // units absorbed, trailing 12 mo (CoStar)
 
         // Asking rent: current vs last quarter / year ago (subject summary, page 2)
         askRentNow: 1497, askRentLastQtr: 1517, askRentYearAgo: 1556,
@@ -334,19 +336,13 @@ document.getElementById('hdr-asof').textContent = new Date(DATA.asOf + 'T00:00:0
 // KPI: occupancy
 document.getElementById('kpi-occ').textContent = fmtPct1(S.occupied);
 document.getElementById('kpi-occ-sub').textContent =
-    `vacancy ${fmtPct1(1 - S.occupied)} · ${Math.round((1 - S.occupied) * S.totalUnits)} of ${S.totalUnits} vacant`;
+    `${Math.round(S.occupied * S.totalUnits)} of ${S.totalUnits} occupied · ${S.onNotice} on notice · rent roll ${S.occAsOf}`;
 
-// KPI: leased (true leased if provided, else availability proxy)
-if (S.leased != null) {
-    document.getElementById('kpi-lease-label').textContent = '% Leased';
-    document.getElementById('kpi-lease').textContent = fmtPct1(S.leased);
-    document.getElementById('kpi-lease-sub').textContent = 'incl. signed, not yet moved in';
-} else {
-    document.getElementById('kpi-lease-label').textContent = '% Available';
-    document.getElementById('kpi-lease').textContent = fmtPct1(S.availability);
-    document.getElementById('kpi-lease-sub').textContent =
-        `${Math.round(S.availability * S.totalUnits)} of ${S.totalUnits} units · CoStar reports availability, not leased`;
-}
+// KPI: leased
+document.getElementById('kpi-lease-label').textContent = '% Leased';
+document.getElementById('kpi-lease').textContent = fmtPct1(S.leased);
+document.getElementById('kpi-lease-sub').textContent =
+    `${Math.round(S.leased * S.totalUnits)} units with active leases · ${S.vacant} vacant, none pre-leased`;
 
 // KPI: rent growth (QoQ headline, YoY subtext)
 const qoq = S.askRentNow / S.askRentLastQtr - 1;
@@ -413,11 +409,11 @@ DATA.comps.forEach(c => {
 
 // Note
 document.getElementById('note-box').innerHTML =
-    `<strong>Sourced from CoStar.</strong> Unit mix, rents, occupancy/availability, concessions and comps are
-     from the report dated 6/25/2026 (rents updated 6/24/2026). Map pin coordinates are approximate
-     (grid-derived); comp distances in the table are CoStar's exact figures. The hero image is a placeholder —
-     drop in the asset's marketing photo URL. A true <em>% leased</em> and <em>month-over-month</em> rent change
-     require the Mark-Taylor rent roll (CoStar reports availability and quarterly rent on the subject sheet).`;
+    `<strong>Sources.</strong> Occupancy &amp; leased are from the Mark-Taylor rent roll (5/28/2026): 224 occupied /
+     16 vacant of 240, 22 on notice. Unit mix, rents, concessions and the 5 comps are from the CoStar report
+     dated 6/25/2026 (rents updated 6/24/2026); rent growth is CoStar's quarterly/annual figure — true
+     month-over-month will populate once a second weekly rent roll is loaded. Map pin coordinates are approximate
+     (grid-derived); comp distances are CoStar's exact figures.`;
 
 // Map (lazy init on first switch)
 let map = null;
