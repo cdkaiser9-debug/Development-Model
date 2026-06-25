@@ -13,248 +13,115 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --navy: #0f1f3a;
-            --amber: #f59e0b;
-            --blue: #2563eb;
-            --red: #ef4444;
-            --green: #059669;
-            --ink: #1a1a2e;
-            --muted: #6b7280;
-            --line: #e5e7eb;
-            --bg: #f5f6f8;
+            --navy: #0f1f3a; --amber: #f59e0b; --blue: #2563eb; --red: #ef4444;
+            --green: #059669; --ink: #1a1a2e; --muted: #6b7280; --line: #e5e7eb; --bg: #f5f6f8;
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--ink);
-            min-height: 100vh;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg); color: var(--ink); min-height: 100vh; }
 
-        /* ---------- Header ---------- */
-        header {
-            background: var(--navy);
-            color: #fff;
-            padding: 1rem 1.5rem;
-            display: flex;
-            align-items: baseline;
-            gap: 1rem;
-            flex-wrap: wrap;
-            border-bottom: 3px solid var(--amber);
-        }
+        header { background: var(--navy); color: #fff; padding: 1rem 1.5rem;
+            display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap;
+            border-bottom: 3px solid var(--amber); }
         header h1 { font-size: 1.35rem; font-weight: 700; }
         header .addr { font-size: 0.9rem; color: #cbd5e1; }
-        header .asof {
-            margin-left: auto;
-            font-size: 0.8rem;
-            color: #cbd5e1;
-            text-align: right;
-        }
+        header .asof { margin-left: auto; font-size: 0.8rem; color: #cbd5e1; text-align: right; }
         header .asof strong { color: #fff; }
 
-        /* ---------- Layout ---------- */
-        .wrap {
-            max-width: 1280px;
-            margin: 1.5rem auto;
-            padding: 0 1.5rem;
-            display: grid;
-            grid-template-columns: 380px 1fr;
-            gap: 1.5rem;
-            align-items: start;
-        }
-        @media (max-width: 920px) {
-            .wrap { grid-template-columns: 1fr; }
-        }
+        .wrap { max-width: 1280px; margin: 1.5rem auto; padding: 0 1.5rem;
+            display: grid; grid-template-columns: 400px 1fr; gap: 1.5rem; align-items: start; }
+        @media (max-width: 920px) { .wrap { grid-template-columns: 1fr; } }
 
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(15,31,58,0.08);
-            overflow: hidden;
-        }
-        .card h2 {
-            font-size: 0.95rem;
-            color: #374151;
-            padding: 0.9rem 1.1rem;
-            border-bottom: 2px solid var(--line);
-        }
+        .card { background: #fff; border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(15,31,58,0.08); overflow: hidden; }
+        .card h2 { font-size: 0.95rem; color: #374151; padding: 0.9rem 1.1rem;
+            border-bottom: 2px solid var(--line); }
+        .card h2 .sub { font-weight: 400; color: var(--muted); font-size: 0.8rem; }
 
-        /* ---------- KPI cards ---------- */
-        .kpis {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.85rem;
-            margin-bottom: 1.25rem;
-        }
-        .kpi {
-            background: #fff;
-            border-radius: 12px;
-            padding: 1rem 1.1rem;
-            box-shadow: 0 1px 3px rgba(15,31,58,0.08);
-        }
-        .kpi .label {
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--muted);
-            margin-bottom: 0.4rem;
-        }
-        .kpi .value {
-            font-size: 1.7rem;
-            font-weight: 700;
-            color: var(--navy);
-            font-variant-numeric: tabular-nums;
-        }
-        .kpi .sub { font-size: 0.74rem; color: #9ca3af; margin-top: 0.2rem; }
+        .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1.25rem; }
+        .kpi { background: #fff; border-radius: 12px; padding: 1rem 1.1rem;
+            box-shadow: 0 1px 3px rgba(15,31,58,0.08); }
+        .kpi .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em;
+            color: var(--muted); margin-bottom: 0.4rem; }
+        .kpi .value { font-size: 1.7rem; font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; }
+        .kpi .sub { font-size: 0.72rem; color: #9ca3af; margin-top: 0.2rem; }
         .kpi.span2 { grid-column: 1 / -1; }
         .value.pos { color: var(--green); }
         .value.neg { color: var(--red); }
         .trend-arrow { font-size: 1.1rem; }
+        .delta-yoy { font-size: 0.85rem; font-weight: 600; margin-left: 0.5rem; }
 
-        /* ---------- Unit mix table ---------- */
         .table-wrap { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-        th, td {
-            padding: 0.55rem 0.7rem;
-            border-bottom: 1px solid var(--line);
-            white-space: nowrap;
-            text-align: right;
-        }
-        th {
-            background: #f9fafb;
-            font-weight: 600;
-            color: #374151;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        th, td { padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--line); white-space: nowrap; text-align: right; }
+        th { background: #f9fafb; font-weight: 600; color: #374151; font-size: 0.68rem;
+            text-transform: uppercase; letter-spacing: 0.03em; }
         th:first-child, td:first-child { text-align: left; }
         td.num { font-variant-numeric: tabular-nums; }
         .unit-type { font-weight: 600; color: var(--navy); }
-        tfoot td {
-            font-weight: 700;
-            border-top: 2px solid var(--navy);
-            background: #f9fafb;
-        }
+        tfoot td { font-weight: 700; border-top: 2px solid var(--navy); background: #f9fafb; }
         .conc { color: var(--muted); }
 
-        /* ---------- Hero: photo <-> map ---------- */
         .hero { position: relative; }
-        .hero-toggle {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            z-index: 600;
-            display: inline-flex;
-            background: rgba(15,31,58,0.85);
-            border-radius: 999px;
-            padding: 3px;
-            backdrop-filter: blur(4px);
-        }
-        .hero-toggle button {
-            border: none;
-            background: transparent;
-            color: #cbd5e1;
-            font-size: 0.82rem;
-            font-weight: 600;
-            padding: 0.4rem 1rem;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
+        .hero-toggle { position: absolute; top: 1rem; right: 1rem; z-index: 600;
+            display: inline-flex; background: rgba(15,31,58,0.85); border-radius: 999px;
+            padding: 3px; backdrop-filter: blur(4px); }
+        .hero-toggle button { border: none; background: transparent; color: #cbd5e1;
+            font-size: 0.82rem; font-weight: 600; padding: 0.4rem 1rem; border-radius: 999px;
+            cursor: pointer; transition: all 0.15s; }
         .hero-toggle button.active { background: #fff; color: var(--navy); }
 
         .hero-stage { position: relative; height: 460px; }
         @media (max-width: 920px) { .hero-stage { height: 360px; } }
-
-        #photoView {
-            position: absolute; inset: 0;
-            background: #1a1a2e center/cover no-repeat;
-            display: flex;
-            align-items: flex-end;
-        }
-        #photoView .photo-caption {
-            width: 100%;
+        #photoView { position: absolute; inset: 0; background: #1a1a2e center/cover no-repeat;
+            display: flex; align-items: flex-end; }
+        #photoView .photo-caption { width: 100%;
             background: linear-gradient(transparent, rgba(15,31,58,0.85));
-            color: #fff;
-            padding: 1.5rem 1.25rem 1rem;
-        }
+            color: #fff; padding: 1.5rem 1.25rem 1rem; }
         #photoView .photo-caption .name { font-size: 1.3rem; font-weight: 700; }
         #photoView .photo-caption .meta { font-size: 0.85rem; color: #e2e8f0; margin-top: 0.2rem; }
-
+        .photo-tag { position: absolute; top: 1rem; left: 1rem; background: rgba(245,158,11,0.92);
+            color: #3a2400; font-size: 0.68rem; font-weight: 700; padding: 0.25rem 0.6rem;
+            border-radius: 6px; z-index: 600; }
         #mapView { position: absolute; inset: 0; display: none; }
         #mapView.active { display: block; }
         #photoView.hidden { display: none; }
         #map { width: 100%; height: 100%; }
 
-        .hero-legend {
-            display: flex;
-            gap: 1.25rem;
-            font-size: 0.78rem;
-            color: var(--muted);
-            padding: 0.7rem 1.1rem;
-            border-top: 1px solid var(--line);
-            flex-wrap: wrap;
-        }
+        .hero-legend { display: flex; gap: 1.25rem; font-size: 0.78rem; color: var(--muted);
+            padding: 0.7rem 1.1rem; border-top: 1px solid var(--line); flex-wrap: wrap; }
         .hero-legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
-        .hero-legend .dot { width: 11px; height: 11px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px #cbd5e1; }
+        .hero-legend .dot { width: 11px; height: 11px; border-radius: 50%; border: 2px solid #fff;
+            box-shadow: 0 0 0 1px #cbd5e1; }
         .dot.subject { background: var(--red); }
         .dot.comp { background: var(--blue); }
         .ring-key { width: 18px; height: 0; border-top: 2px dashed var(--amber); }
 
-        /* ---------- Comps table under hero ---------- */
         .comp-table td:first-child { text-align: left; }
         .comp-name { font-weight: 600; color: var(--navy); }
-        .badge {
-            display: inline-block;
-            padding: 0.05rem 0.5rem;
-            border-radius: 999px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            background: #dbeafe;
-            color: #1e40af;
-        }
-        .occ { font-weight: 600; }
-        .occ.low { color: var(--red); }
-        .occ.mid { color: #b45309; }
-        .occ.high { color: var(--green); }
+        .comp-addr { color: var(--muted); font-size: 0.72rem; }
+        .occ.low { color: var(--red); font-weight: 600; }
+        .occ.mid { color: #b45309; font-weight: 600; }
+        .occ.high { color: var(--green); font-weight: 600; }
 
-        /* ---------- Map hover card ---------- */
-        .leaflet-tooltip.prop-card {
-            background: #fff; border: 1px solid #d1d5db; border-radius: 10px;
-            padding: 0; box-shadow: 0 8px 24px rgba(15,31,58,0.25);
-            opacity: 1; max-width: 300px; white-space: normal;
-        }
+        .leaflet-tooltip.prop-card { background: #fff; border: 1px solid #d1d5db; border-radius: 10px;
+            padding: 0; box-shadow: 0 8px 24px rgba(15,31,58,0.25); opacity: 1; max-width: 300px; white-space: normal; }
         .leaflet-tooltip.prop-card::before { display: none; }
-        .pc-photo {
-            width: 100%; height: 120px;
-            background: #e5e7eb center/cover no-repeat;
-            border-radius: 10px 10px 0 0;
-            display: flex; align-items: flex-end;
-            color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.6);
-            padding: 0.5rem 0.75rem; font-weight: 700; font-size: 0.9rem;
-        }
+        .pc-photo { width: 100%; height: 116px; background: #1a1a2e center/cover no-repeat;
+            border-radius: 10px 10px 0 0; display: flex; align-items: flex-end; color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.7); padding: 0.5rem 0.75rem; font-weight: 700; font-size: 0.9rem; }
         .pc-body { padding: 0.6rem 0.8rem 0.8rem; }
-        .pc-meta { font-size: 0.74rem; color: var(--muted); margin-bottom: 0.45rem; display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
-        .pc-meta .badge { background: #dbeafe; color: #1e40af; }
+        .pc-meta { font-size: 0.74rem; color: var(--muted); margin-bottom: 0.45rem;
+            display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+        .pc-meta .badge { background: #dbeafe; color: #1e40af; border-radius: 999px; padding: 0.05rem 0.55rem; font-weight: 600; }
         .pc-meta .occ-badge { background: #dcfce7; color: #166534; border-radius: 999px; padding: 0.05rem 0.55rem; font-weight: 600; }
-        .pc-rents { border-top: 1px solid var(--line); padding-top: 0.4rem; display: grid; grid-template-columns: 1fr auto auto; gap: 0.1rem 0.6rem; font-size: 0.8rem; }
+        .pc-rents { border-top: 1px solid var(--line); padding-top: 0.4rem;
+            display: grid; grid-template-columns: 1fr auto auto; gap: 0.1rem 0.6rem; font-size: 0.8rem; }
         .pc-rents .h { font-size: 0.66rem; text-transform: uppercase; color: var(--muted); font-weight: 600; }
         .pc-rents .rent { text-align: right; font-weight: 600; color: var(--navy); font-variant-numeric: tabular-nums; }
         .pc-rents .sf { text-align: right; color: var(--muted); font-size: 0.74rem; }
 
-        .disclaimer {
-            max-width: 1280px;
-            margin: 0 auto 2rem;
-            padding: 0.75rem 1.5rem;
-            font-size: 0.78rem;
-            color: #78350f;
-        }
-        .disclaimer .box {
-            background: #fff7ed;
-            border-left: 4px solid var(--amber);
-            border-radius: 6px;
-            padding: 0.75rem 1rem;
-        }
+        .note { max-width: 1280px; margin: 0 auto 2rem; padding: 0.75rem 1.5rem; font-size: 0.78rem; color: #78350f; }
+        .note .box { background: #fff7ed; border-left: 4px solid var(--amber); border-radius: 6px; padding: 0.75rem 1rem; }
         footer { text-align: center; color: #9ca3af; font-size: 0.76rem; padding: 0 1rem 2rem; }
     </style>
 </head>
@@ -262,47 +129,43 @@
     <header>
         <div>
             <h1 id="hdr-name">The Statler</h1>
-            <div class="addr" id="hdr-addr">14560 W Greenway Rd, Surprise, AZ 85388</div>
+            <div class="addr" id="hdr-addr"></div>
         </div>
         <div class="asof">
             Data as of <strong id="hdr-asof">—</strong><br>
-            <span id="hdr-source">Source: CoStar underwriting report</span>
+            <span id="hdr-source"></span>
         </div>
     </header>
 
     <div class="wrap">
-        <!-- LEFT COLUMN: KPIs + unit-mix grid -->
+        <!-- LEFT: KPIs + unit-mix grid -->
         <div class="left-col">
             <div class="kpis">
                 <div class="kpi">
                     <div class="label">% Occupied</div>
                     <div class="value" id="kpi-occ">—</div>
-                    <div class="sub" id="kpi-occ-sub">physical occupancy</div>
+                    <div class="sub" id="kpi-occ-sub"></div>
                 </div>
                 <div class="kpi">
-                    <div class="label">% Leased</div>
-                    <div class="value" id="kpi-leased">—</div>
-                    <div class="sub" id="kpi-leased-sub">incl. signed not moved-in</div>
+                    <div class="label" id="kpi-lease-label">% Leased</div>
+                    <div class="value" id="kpi-lease">—</div>
+                    <div class="sub" id="kpi-lease-sub"></div>
                 </div>
                 <div class="kpi span2">
-                    <div class="label">Rent Growth — Month over Month</div>
-                    <div class="value" id="kpi-rentmom">—</div>
-                    <div class="sub" id="kpi-rentmom-sub">effective rent vs. prior month</div>
+                    <div class="label">Asking Rent Growth / (Loss)</div>
+                    <div><span class="value" id="kpi-rent">—</span><span class="delta-yoy" id="kpi-rent-yoy"></span></div>
+                    <div class="sub" id="kpi-rent-sub"></div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>Unit Mix &amp; Rents</h2>
+                <h2>Unit Mix &amp; Rents <span class="sub">— page 2, asking rent</span></h2>
                 <div class="table-wrap">
                     <table id="unit-mix">
                         <thead>
                             <tr>
-                                <th>Unit Type</th>
-                                <th>SF</th>
-                                <th># Units</th>
-                                <th>Rent / Unit</th>
-                                <th>Rent PSF</th>
-                                <th>Concessions</th>
+                                <th>Unit Type</th><th>SF</th><th># Units</th>
+                                <th>Rent / Unit</th><th>Rent PSF</th><th>Conc.</th>
                             </tr>
                         </thead>
                         <tbody id="unit-mix-body"></tbody>
@@ -312,9 +175,10 @@
             </div>
         </div>
 
-        <!-- RIGHT COLUMN: photo <-> map hero + comps -->
+        <!-- RIGHT: photo <-> map hero + comps -->
         <div class="right-col">
             <div class="card hero">
+                <div class="photo-tag" id="photo-tag">Placeholder image</div>
                 <div class="hero-toggle">
                     <button id="btn-photo" class="active" onclick="showView('photo')">Photo</button>
                     <button id="btn-map" onclick="showView('map')">Map &amp; Comps</button>
@@ -322,34 +186,28 @@
                 <div class="hero-stage">
                     <div id="photoView">
                         <div class="photo-caption">
-                            <div class="name" id="pv-name">The Statler</div>
-                            <div class="meta" id="pv-meta">—</div>
+                            <div class="name" id="pv-name"></div>
+                            <div class="meta" id="pv-meta"></div>
                         </div>
                     </div>
                     <div id="mapView"><div id="map"></div></div>
                 </div>
                 <div class="hero-legend">
                     <span><i class="dot subject"></i> The Statler (subject)</span>
-                    <span><i class="dot comp"></i> Comparable</span>
-                    <span><i class="ring-key"></i> 2-mile radius</span>
+                    <span><i class="dot comp"></i> Rent comp</span>
+                    <span><i class="ring-key"></i> 1-mile radius</span>
                     <span>Hover a pin for unit-level rents</span>
                 </div>
             </div>
 
             <div class="card" style="margin-top:1.5rem;">
-                <h2>Comparable Properties</h2>
+                <h2>Rent Comparables <span class="sub">— 5 comps from the CoStar report</span></h2>
                 <div class="table-wrap">
                     <table class="comp-table">
                         <thead>
                             <tr>
-                                <th>Property</th>
-                                <th>Built</th>
-                                <th>Units</th>
-                                <th>Avg SF</th>
-                                <th>Avg Eff. Rent</th>
-                                <th>Avg PSF</th>
-                                <th>Occ.</th>
-                                <th>Dist.</th>
+                                <th>Property</th><th>Built</th><th>Units</th><th>Avg SF</th>
+                                <th>Asking / Unit</th><th>PSF</th><th>Conc.</th><th>Occ.</th><th>Dist.</th>
                             </tr>
                         </thead>
                         <tbody id="comp-body"></tbody>
@@ -359,278 +217,267 @@
         </div>
     </div>
 
-    <div class="disclaimer">
-        <div class="box" id="disclaimer-box">
-            <strong>Placeholder data.</strong> Unit mix, occupancy/leased, rent-growth, and comp figures are
-            illustrative pending the actual CoStar export for The Statler. Update the <code>DATA</code> block at
-            the top of this file's script each week with verified figures.
-        </div>
+    <div class="note">
+        <div class="box" id="note-box"></div>
     </div>
 
-    <footer>
-        The Statler — Property Dashboard · Generated <span id="gen-date"></span>
-    </footer>
+    <footer>The Statler — Property Dashboard · Generated <span id="gen-date"></span></footer>
 
 <script>
 /* =====================================================================
-   WEEKLY UPDATE SURFACE
-   ---------------------------------------------------------------------
-   Everything the dashboard renders comes from this DATA object. To do
-   the weekly refresh, replace the values below with the figures from
-   the latest CoStar report (page 2 unit-mix grid + occupancy/leased/
-   rent-growth) and re-open the file. Nothing else needs to change.
-
-   NOTE: values below are PLACEHOLDERS until the real CoStar numbers
-   for The Statler are provided.
+   WEEKLY UPDATE SURFACE — everything rendered comes from DATA below.
+   Replace values from the latest CoStar export each week and reopen.
+   Figures below are from: The Statler — 14560 W Greenway Rd, CoStar
+   underwriting report dated 6/25/2026 (rents "Updated June 24, 2026").
    ===================================================================== */
 const DATA = {
-    asOf: "2026-06-25",            // report "as of" date
-    source: "CoStar underwriting report",
+    asOf: "2026-06-24",
+    source: "CoStar underwriting report (6/25/2026)",
 
     subject: {
         name: "The Statler",
-        address: "14560 W Greenway Rd, Surprise, AZ 85388",
-        yearBuilt: 2024,
-        totalUnits: 280,
-        lat: 33.6383,
-        lng: -112.3576,
-        // Replace with the asset's marketing photo URL (or a local path).
+        address: "14560 W Greenway Rd, Surprise, AZ 85388 — South Surprise",
+        manager: "Mark-Taylor", owner: "Larson Capital Management",
+        yearBuilt: "May 2024", stories: 4, totalUnits: 240, avgSf: 828,
+        lat: 33.6242, lng: -112.3690,            // approximate (grid-derived)
         photo: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000&h=600&fit=crop",
+        photoIsPlaceholder: true,
 
-        // Performance KPIs (from the report).
-        occupied: 0.862,           // % physically occupied
-        leased: 0.901,             // % leased (incl. signed-not-moved-in)
-        rentGrowthMoM: 0.006,      // effective-rent change vs. prior month (+/-)
+        // ---- KPIs (from report) ----
+        occupied: 0.912,          // 100% − 8.8% vacancy (21 of 240 units vacant)
+        availability: 0.113,      // 27 of 240 units available
+        leased: null,             // CoStar reports availability, not a leased rate.
+                                  //   Set this from the Mark-Taylor rent roll for a true % leased.
+        absorption12mo: 40,       // units absorbed, trailing 12 mo
 
-        // PAGE-2 UNIT-MIX GRID -------------------------------------------
-        // type | sqft | units | rent (monthly $/unit) | concessions (text)
-        // Rent PSF is computed automatically (rent / sqft).
+        // Asking rent: current vs last quarter / year ago (subject summary, page 2)
+        askRentNow: 1497, askRentLastQtr: 1517, askRentYearAgo: 1556,
+        askPsfNow: 1.81, effRentNow: 1483, effPsfNow: 1.79,
+
+        // ---- PAGE-2 UNIT-MIX GRID (asking rent) ----
         unitMix: [
-            { type: "Studio", sqft: 540,  units: 28,  rent: 1495, concessions: "1 mo free" },
-            { type: "1 BR",   sqft: 745,  units: 132, rent: 1725, concessions: "1 mo free" },
-            { type: "2 BR",   sqft: 1085, units: 96,  rent: 2095, concessions: "6 wks free" },
-            { type: "3 BR",   sqft: 1395, units: 24,  rent: 2545, concessions: "—" },
+            { type: "Studio / 1BA", sqft: 527,  units: 15, rent: 1224, psf: 2.32, conc: "0.9%" },
+            { type: "1BR / 1BA",    sqft: 581,  units: 4,  rent: 1466, psf: 2.52, conc: "0.9%" },
+            { type: "1BR / 1BA",    sqft: 667,  units: 14, rent: 1474, psf: 2.21, conc: "0.9%" },
+            { type: "1BR / 1BA",    sqft: 688,  units: 52, rent: 1341, psf: 1.95, conc: "0.9%" },
+            { type: "1BR / 1BA",    sqft: 711,  units: 22, rent: 1400, psf: 1.97, conc: "0.9%" },
+            { type: "1BR / 1BA",    sqft: 718,  units: 54, rent: 1368, psf: 1.91, conc: "0.9%" },
+            { type: "1BR / 1BA",    sqft: 814,  units: 8,  rent: 1564, psf: 1.92, conc: "0.9%" },
+            { type: "2BR / 2BA",    sqft: 1080, units: 32, rent: 1786, psf: 1.65, conc: "0.9%" },
+            { type: "2BR / 2BA",    sqft: 1150, units: 28, rent: 1699, psf: 1.48, conc: "0.9%" },
+            { type: "3BR / 2BA",    sqft: 1436, units: 11, rent: 2061, psf: 1.44, conc: "0.9%" },
         ],
+        // Reported totals (page 2): 828 SF avg · 240 units · $1,497 · $1.81 · 0.9%
+        totals: { avgSf: 828, units: 240, rent: 1497, psf: 1.81, conc: "0.9%" },
     },
 
-    // 3–5 comparable assets in the submarket (within ~2 miles).
+    // 5 rent comps from the report (asking rent per unit; vacancy → occupancy).
     comps: [
         {
-            name: "Acero at Marley Park", yearBuilt: 2022, units: 312, occupancy: 0.94,
-            lat: 33.6502, lng: -112.3478,
+            name: "Alta Surprise", addr: "16230 N Litchfield Rd",
+            yearBuilt: 2023, units: 312, avgSf: 934, askRent: 1592, askPsf: 1.70,
+            occupancy: 0.888, conc: "19.2%", distMi: 0.86, lat: 33.6292, lng: -112.3573,
             photo: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&h=300&fit=crop",
             rents: [
-                { type: "Studio", sqft: 545,  eff: 1485 },
-                { type: "1 BR",   sqft: 740,  eff: 1680 },
-                { type: "2 BR",   sqft: 1075, eff: 2050 },
-                { type: "3 BR",   sqft: 1395, eff: 2495 },
+                { type: "Studio", eff: 1357 }, { type: "1 BR", eff: 1491 },
+                { type: "2 BR", eff: 1716 }, { type: "3 BR", eff: 2203 },
             ],
         },
         {
-            name: "Liv North Surprise", yearBuilt: 2023, units: 244, occupancy: 0.91,
-            lat: 33.6448, lng: -112.3402,
+            name: "Christopher Todd Communities Greenway", addr: "15267 N 140th Dr",
+            yearBuilt: 2018, units: 136, avgSf: 876, askRent: 1455, askPsf: 1.66,
+            occupancy: 0.934, conc: "15.4%", distMi: 0.72, lat: 33.6262, lng: -112.3632,
             photo: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=300&fit=crop",
-            rents: [
-                { type: "1 BR", sqft: 755,  eff: 1715 },
-                { type: "2 BR", sqft: 1095, eff: 2095 },
-                { type: "3 BR", sqft: 1410, eff: 2580 },
-            ],
+            rents: [ { type: "1 BR", eff: 1296 }, { type: "2 BR", eff: 1567 } ],
         },
         {
-            name: "Avilla Centerra Crossings", yearBuilt: 2021, units: 188, occupancy: 0.96,
-            lat: 33.6298, lng: -112.3482,
+            name: "Harmony at Surprise", addr: "15164 N 140th Dr",
+            yearBuilt: 2008, units: 312, avgSf: 1018, askRent: 1546, askPsf: 1.52,
+            occupancy: 0.888, conc: "1.0%", distMi: 0.63, lat: 33.6250, lng: -112.3632,
             photo: "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=600&h=300&fit=crop",
-            rents: [
-                { type: "1 BR", sqft: 720,  eff: 1795 },
-                { type: "2 BR", sqft: 1050, eff: 2185 },
-                { type: "3 BR", sqft: 1340, eff: 2645 },
-            ],
+            rents: [ { type: "1 BR", eff: 1351 }, { type: "2 BR", eff: 1533 }, { type: "3 BR", eff: 1949 } ],
         },
         {
-            name: "Trillium at Marley Park", yearBuilt: 2024, units: 264, occupancy: 0.88,
-            lat: 33.6535, lng: -112.3611,
+            name: "The Residences at Stadium Village", addr: "16485 N Stadium Way",
+            yearBuilt: 2009, units: 382, avgSf: 947, askRent: 1411, askPsf: 1.49,
+            occupancy: 0.950, conc: "15.4%", distMi: 0.67, lat: 33.6345, lng: -112.3690,
             photo: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600&h=300&fit=crop",
-            rents: [
-                { type: "Studio", sqft: 540,  eff: 1525 },
-                { type: "1 BR",   sqft: 745,  eff: 1735 },
-                { type: "2 BR",   sqft: 1085, eff: 2110 },
-                { type: "3 BR",   sqft: 1395, eff: 2540 },
-            ],
+            rents: [ { type: "1 BR", eff: 1204 }, { type: "2 BR", eff: 1554 }, { type: "3 BR", eff: 1975 } ],
         },
         {
-            name: "Vista Ventana", yearBuilt: 2021, units: 320, occupancy: 0.93,
-            lat: 33.6325, lng: -112.3712,
+            name: "Springs at Stadium Village", addr: "16945 N Stadium Way",
+            yearBuilt: 2023, units: 204, avgSf: 1085, askRent: 1577, askPsf: 1.45,
+            occupancy: 0.848, conc: "11.0%", distMi: 0.88, lat: 33.6412, lng: -112.3690,
             photo: "https://images.unsplash.com/photo-1494526585095-c41746248156?w=600&h=300&fit=crop",
             rents: [
-                { type: "1 BR", sqft: 735,  eff: 1655 },
-                { type: "2 BR", sqft: 1075, eff: 2025 },
-                { type: "3 BR", sqft: 1380, eff: 2470 },
+                { type: "Studio", eff: 1281 }, { type: "1 BR", eff: 1423 },
+                { type: "2 BR", eff: 1675 }, { type: "3 BR", eff: 1974 },
             ],
         },
     ],
 };
 
-/* =====================================================================
-   Rendering — generally no need to edit below this line.
-   ===================================================================== */
+/* ============================ rendering ============================ */
+const S = DATA.subject;
 const fmtMoney = n => '$' + Math.round(n).toLocaleString();
 const fmtPct1  = n => (n * 100).toFixed(1) + '%';
 const fmtPsf   = n => '$' + n.toFixed(2);
-const RADIUS_M = 2 * 1609.344;
+const RADIUS_M = 1609.344;        // 1 mile (all comps are within ~0.9 mi)
 
-// --- Distance (miles) from subject, for the comp table ---
-function milesBetween(a, b) {
-    const R = 3958.8, toRad = d => d * Math.PI / 180;
-    const dLat = toRad(b.lat - a.lat), dLng = toRad(b.lng - a.lng);
-    const s = Math.sin(dLat/2)**2 + Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLng/2)**2;
-    return R * 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1 - s));
-}
-const avg = arr => arr.reduce((s, v) => s + v, 0) / arr.length;
-
-// --- Header ---
-document.getElementById('hdr-name').textContent = DATA.subject.name;
-document.getElementById('hdr-addr').textContent = DATA.subject.address;
+// Header
+document.getElementById('hdr-name').textContent = S.name;
+document.getElementById('hdr-addr').textContent = S.address;
 document.getElementById('hdr-source').textContent = 'Source: ' + DATA.source;
 document.getElementById('hdr-asof').textContent = new Date(DATA.asOf + 'T00:00:00')
     .toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
-// --- KPIs ---
-document.getElementById('kpi-occ').textContent = fmtPct1(DATA.subject.occupied);
-document.getElementById('kpi-leased').textContent = fmtPct1(DATA.subject.leased);
-const mom = DATA.subject.rentGrowthMoM;
-const momEl = document.getElementById('kpi-rentmom');
-const arrow = mom > 0 ? '▲' : mom < 0 ? '▼' : '▬';
-momEl.innerHTML = `<span class="trend-arrow">${arrow}</span> ${(mom >= 0 ? '+' : '') + (mom * 100).toFixed(2)}%`;
-momEl.classList.add(mom > 0 ? 'pos' : mom < 0 ? 'neg' : '');
+// KPI: occupancy
+document.getElementById('kpi-occ').textContent = fmtPct1(S.occupied);
+document.getElementById('kpi-occ-sub').textContent =
+    `vacancy ${fmtPct1(1 - S.occupied)} · ${Math.round((1 - S.occupied) * S.totalUnits)} of ${S.totalUnits} vacant`;
 
-// --- Unit-mix grid ---
+// KPI: leased (true leased if provided, else availability proxy)
+if (S.leased != null) {
+    document.getElementById('kpi-lease-label').textContent = '% Leased';
+    document.getElementById('kpi-lease').textContent = fmtPct1(S.leased);
+    document.getElementById('kpi-lease-sub').textContent = 'incl. signed, not yet moved in';
+} else {
+    document.getElementById('kpi-lease-label').textContent = '% Available';
+    document.getElementById('kpi-lease').textContent = fmtPct1(S.availability);
+    document.getElementById('kpi-lease-sub').textContent =
+        `${Math.round(S.availability * S.totalUnits)} of ${S.totalUnits} units · CoStar reports availability, not leased`;
+}
+
+// KPI: rent growth (QoQ headline, YoY subtext)
+const qoq = S.askRentNow / S.askRentLastQtr - 1;
+const yoy = S.askRentNow / S.askRentYearAgo - 1;
+const signPct = v => (v >= 0 ? '+' : '') + (v * 100).toFixed(1) + '%';
+const rentEl = document.getElementById('kpi-rent');
+const arrow = qoq > 0 ? '▲' : qoq < 0 ? '▼' : '▬';
+rentEl.innerHTML = `<span class="trend-arrow">${arrow}</span> ${signPct(qoq)}`;
+rentEl.classList.add(qoq > 0 ? 'pos' : qoq < 0 ? 'neg' : '');
+const yoyEl = document.getElementById('kpi-rent-yoy');
+yoyEl.textContent = `${signPct(yoy)} YoY`;
+yoyEl.classList.add(yoy >= 0 ? 'pos' : 'neg');
+document.getElementById('kpi-rent-sub').textContent =
+    `asking ${fmtMoney(S.askRentNow)} now vs ${fmtMoney(S.askRentLastQtr)} last qtr · CoStar reports quarterly (not monthly)`;
+
+// Unit-mix grid
 const body = document.getElementById('unit-mix-body');
-let totUnits = 0, totSf = 0, totRent = 0;
-DATA.subject.unitMix.forEach(u => {
-    const psf = u.rent / u.sqft;
-    totUnits += u.units;
-    totSf += u.sqft * u.units;
-    totRent += u.rent * u.units;
+S.unitMix.forEach(u => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
         <td class="unit-type">${u.type}</td>
         <td class="num">${u.sqft.toLocaleString()}</td>
         <td class="num">${u.units}</td>
         <td class="num">${fmtMoney(u.rent)}</td>
-        <td class="num">${fmtPsf(psf)}</td>
-        <td class="conc">${u.concessions}</td>`;
+        <td class="num">${fmtPsf(u.psf)}</td>
+        <td class="conc">${u.conc}</td>`;
     body.appendChild(tr);
 });
-const wAvgSf = totSf / totUnits;
-const wAvgRent = totRent / totUnits;
+const t = S.totals;
 document.getElementById('unit-mix-foot').innerHTML = `
     <tr>
         <td>Total / Avg</td>
-        <td class="num">${Math.round(wAvgSf).toLocaleString()}</td>
-        <td class="num">${totUnits}</td>
-        <td class="num">${fmtMoney(wAvgRent)}</td>
-        <td class="num">${fmtPsf(wAvgRent / wAvgSf)}</td>
-        <td></td>
+        <td class="num">${t.avgSf.toLocaleString()}</td>
+        <td class="num">${t.units}</td>
+        <td class="num">${fmtMoney(t.rent)}</td>
+        <td class="num">${fmtPsf(t.psf)}</td>
+        <td class="conc">${t.conc}</td>
     </tr>`;
 
-// --- Photo view ---
-document.getElementById('photoView').style.backgroundImage = `url('${DATA.subject.photo}')`;
-document.getElementById('pv-name').textContent = DATA.subject.name;
+// Photo view
+document.getElementById('photoView').style.backgroundImage = `url('${S.photo}')`;
+document.getElementById('pv-name').textContent = S.name;
 document.getElementById('pv-meta').textContent =
-    `Built ${DATA.subject.yearBuilt} · ${DATA.subject.totalUnits} units · ${DATA.subject.address}`;
+    `Built ${S.yearBuilt} · ${S.totalUnits} units · ${S.stories} stories · ${S.avgSf} SF avg · Mgr: ${S.manager}`;
+document.getElementById('photo-tag').style.display = S.photoIsPlaceholder ? '' : 'none';
 
-// --- Comp table ---
+// Comp table
 function occClass(o) { return o < 0.85 ? 'low' : o < 0.92 ? 'mid' : 'high'; }
 const compBody = document.getElementById('comp-body');
 DATA.comps.forEach(c => {
-    const dist = milesBetween(DATA.subject, c);
-    const aSf = avg(c.rents.map(r => r.sqft));
-    const aRent = avg(c.rents.map(r => r.eff));
     const tr = document.createElement('tr');
     tr.innerHTML = `
-        <td class="comp-name">${c.name}</td>
+        <td><div class="comp-name">${c.name}</div><div class="comp-addr">${c.addr}</div></td>
         <td class="num">${c.yearBuilt}</td>
         <td class="num">${c.units}</td>
-        <td class="num">${Math.round(aSf).toLocaleString()}</td>
-        <td class="num">${fmtMoney(aRent)}</td>
-        <td class="num">${fmtPsf(aRent / aSf)}</td>
+        <td class="num">${c.avgSf.toLocaleString()}</td>
+        <td class="num">${fmtMoney(c.askRent)}</td>
+        <td class="num">${fmtPsf(c.askPsf)}</td>
+        <td class="num conc">${c.conc}</td>
         <td class="num occ ${occClass(c.occupancy)}">${fmtPct1(c.occupancy)}</td>
-        <td class="num">${dist.toFixed(1)} mi</td>`;
+        <td class="num">${c.distMi.toFixed(2)} mi</td>`;
     compBody.appendChild(tr);
 });
 
-// --- Map (lazy init on first switch so Leaflet sizes correctly) ---
+// Note
+document.getElementById('note-box').innerHTML =
+    `<strong>Sourced from CoStar.</strong> Unit mix, rents, occupancy/availability, concessions and comps are
+     from the report dated 6/25/2026 (rents updated 6/24/2026). Map pin coordinates are approximate
+     (grid-derived); comp distances in the table are CoStar's exact figures. The hero image is a placeholder —
+     drop in the asset's marketing photo URL. A true <em>% leased</em> and <em>month-over-month</em> rent change
+     require the Mark-Taylor rent roll (CoStar reports availability and quarterly rent on the subject sheet).`;
+
+// Map (lazy init on first switch)
 let map = null;
 function buildMap() {
-    map = L.map('map', { zoomControl: true, scrollWheelZoom: true })
-        .setView([DATA.subject.lat, DATA.subject.lng], 14);
+    map = L.map('map', { zoomControl: true, scrollWheelZoom: true }).setView([S.lat, S.lng], 14);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>', maxZoom: 19,
     }).addTo(map);
+    L.circle([S.lat, S.lng], { radius: RADIUS_M, color: '#f59e0b', weight: 2, dashArray: '6 6',
+        fillColor: '#f59e0b', fillOpacity: 0.06, interactive: false }).addTo(map);
 
-    L.circle([DATA.subject.lat, DATA.subject.lng], {
-        radius: RADIUS_M, color: '#f59e0b', weight: 2, dashArray: '6 6',
-        fillColor: '#f59e0b', fillOpacity: 0.06, interactive: false,
-    }).addTo(map);
-
-    const markerIcon = color => L.divIcon({
-        className: '',
+    const icon = color => L.divIcon({ className: '',
         html: `<div style="width:18px;height:18px;border-radius:50%;background:${color};
                 border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.4);"></div>`,
-        iconSize: [18, 18], iconAnchor: [9, 9],
-    });
+        iconSize: [18, 18], iconAnchor: [9, 9] });
 
-    const rentRows = rents => rents.map(r => `
-        <div>${r.type}</div><div class="sf">${r.sqft.toLocaleString()} sf</div>
-        <div class="rent">${fmtMoney(r.eff)}</div>`).join('');
+    const rentRows = rents => rents.map(r =>
+        `<div>${r.type}</div><div class="sf"></div><div class="rent">${fmtMoney(r.eff)}</div>`).join('');
 
-    function cardHTML(p, isSubject, rents) {
-        const occBadge = isSubject ? '' :
-            `<span class="occ-badge">Occ ${fmtPct1(p.occupancy)}</span>`;
+    function card(p, isSubject, rents) {
+        const occ = isSubject ? '' : `<span class="occ-badge">Occ ${fmtPct1(p.occupancy)}</span>`;
+        const dist = isSubject ? 'Subject' : `${p.distMi.toFixed(2)} mi`;
         return `
             <div class="pc-photo" style="background-image:url('${p.photo}')">${p.name}</div>
             <div class="pc-body">
                 <div class="pc-meta">
-                    <span class="badge">Built ${p.yearBuilt} · ${p.units || p.totalUnits} units</span>
-                    ${occBadge}
+                    <span class="badge">Built ${p.yearBuilt} · ${p.units} units</span>${occ}
                 </div>
+                <div class="pc-meta"><span>${p.addr || ''}</span><span>${dist}</span></div>
                 <div class="pc-rents">
-                    <div class="h">Unit</div><div class="h sf">SF</div><div class="h rent">Eff. Rent</div>
+                    <div class="h">Unit</div><div class="h sf"></div><div class="h rent">Asking</div>
                     ${rentRows(rents)}
                 </div>
             </div>`;
     }
 
-    // Subject — derive rents from unit mix for the hover card
-    const subjRents = DATA.subject.unitMix.map(u => ({ type: u.type, sqft: u.sqft, eff: u.rent }));
-    L.marker([DATA.subject.lat, DATA.subject.lng], { icon: markerIcon('#ef4444'), zIndexOffset: 1000 })
-        .addTo(map)
-        .bindTooltip(cardHTML(DATA.subject, true, subjRents),
+    const subjRents = [
+        { type: "Studio", eff: 1224 }, { type: "1 BR (avg)", eff: 1386 },
+        { type: "2 BR (avg)", eff: 1745 }, { type: "3 BR", eff: 2061 },
+    ];
+    L.marker([S.lat, S.lng], { icon: icon('#ef4444'), zIndexOffset: 1000 }).addTo(map)
+        .bindTooltip(card({ ...S, yearBuilt: S.yearBuilt, units: S.totalUnits }, true, subjRents),
             { className: 'prop-card', direction: 'top', offset: [0, -10] });
 
     DATA.comps.forEach(p => {
-        L.marker([p.lat, p.lng], { icon: markerIcon('#2563eb') })
-            .addTo(map)
-            .bindTooltip(cardHTML(p, false, p.rents),
-                { className: 'prop-card', direction: 'top', offset: [0, -10] });
+        L.marker([p.lat, p.lng], { icon: icon('#2563eb') }).addTo(map)
+            .bindTooltip(card(p, false, p.rents), { className: 'prop-card', direction: 'top', offset: [0, -10] });
     });
 
-    map.fitBounds(L.latLng(DATA.subject.lat, DATA.subject.lng).toBounds(RADIUS_M * 2),
-        { padding: [40, 40] });
+    map.fitBounds(L.latLng(S.lat, S.lng).toBounds(RADIUS_M * 2.2), { padding: [40, 40] });
 }
 
-// --- Toggle ---
 function showView(which) {
     const photo = which === 'photo';
     document.getElementById('photoView').classList.toggle('hidden', !photo);
     document.getElementById('mapView').classList.toggle('active', !photo);
+    document.getElementById('photo-tag').style.visibility = photo ? 'visible' : 'hidden';
     document.getElementById('btn-photo').classList.toggle('active', photo);
     document.getElementById('btn-map').classList.toggle('active', !photo);
-    if (!photo) {
-        if (!map) buildMap();
-        setTimeout(() => map.invalidateSize(), 50);
-    }
+    if (!photo) { if (!map) buildMap(); setTimeout(() => map.invalidateSize(), 50); }
 }
 
 document.getElementById('gen-date').textContent =
