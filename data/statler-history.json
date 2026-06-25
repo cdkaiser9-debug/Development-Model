@@ -1,0 +1,22 @@
+{
+  "_comment": "Weekly snapshot log for The Statler dashboard. The refresh job appends one entry per week so month-over-month and trend figures can be computed across sessions. Newest entries go last.",
+  "property": "The Statler — 14560 W Greenway Rd, Surprise, AZ 85388",
+  "snapshots": [
+    {
+      "weekOf": "2026-06-25",
+      "rentRollDate": "2026-05-28",
+      "costarReportDate": "2026-06-25",
+      "totalUnits": 240,
+      "occupiedUnits": 224,
+      "vacantUnits": 16,
+      "onNoticeUnits": 22,
+      "pctOccupied": 0.9333,
+      "pctLeased": 0.9333,
+      "askRentPerUnit": 1497,
+      "effRentPerUnit": 1483,
+      "askRentPsf": 1.81,
+      "concessionsPct": 0.009,
+      "sources": ["05 2026 The Statler Rent Roll.xlsx", "CoStar report 6/25/2026"]
+    }
+  ]
+}
